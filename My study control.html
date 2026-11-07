@@ -1,0 +1,792 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071426">
+<title>Mohammed's Consistency Tracker</title>
+
+<style>
+:root {
+  --bg: #071426;
+  --card: #10243d;
+  --card2: #142c49;
+  --cyan: #35e0e5;
+  --teal: #00bfa6;
+  --purple: #9b75ff;
+  --text: #f1f7ff;
+  --muted: #9aafc7;
+  --green: #43e6a3;
+  --red: #ff7185;
+  --border: rgba(255,255,255,.09);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background:
+    radial-gradient(circle at 10% 5%, #15365b 0, transparent 30%),
+    radial-gradient(circle at 95% 30%, #281c53 0, transparent 28%),
+    var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 18px 13px 35px;
+}
+
+.container {
+  width: 100%;
+  max-width: 720px;
+  margin: auto;
+}
+
+header {
+  text-align: center;
+  padding: 25px 12px 20px;
+}
+
+.logo {
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 15px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  color: #071426;
+  font-size: 27px;
+  font-weight: 900;
+  box-shadow: 0 0 30px #35e0e550;
+}
+
+h1 {
+  font-size: clamp(22px, 5vw, 31px);
+  line-height: 1.25;
+  letter-spacing: .5px;
+  background: linear-gradient(90deg, #fff, var(--cyan), #b99aff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: var(--cyan);
+  font-size: 13px;
+  margin-top: 10px;
+  font-weight: 700;
+}
+
+.identity {
+  color: var(--muted);
+  margin-top: 7px;
+  font-size: 13px;
+}
+
+.objective {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid #35e0e540;
+  border-radius: 16px;
+  background: linear-gradient(120deg, #12314a, #242044);
+  color: #dcecff;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.section {
+  background: linear-gradient(145deg, #112640, #0d1d34);
+  border: 1px solid var(--border);
+  border-radius: 19px;
+  padding: 19px;
+  margin: 15px 0;
+  box-shadow: 0 12px 30px #00000025;
+}
+
+.section-title {
+  font-size: 17px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.section-title span {
+  color: var(--cyan);
+}
+
+.date {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.stat {
+  background: linear-gradient(135deg, #193956, #29234b);
+  padding: 17px 12px;
+  border-radius: 15px;
+  text-align: center;
+  border: 1px solid #ffffff10;
+}
+
+.stat-number {
+  font-size: 29px;
+  font-weight: 900;
+  color: var(--cyan);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 11px;
+  background: #263b55;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 12px 0 7px;
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--cyan), var(--purple));
+  border-radius: 20px;
+  transition: width .35s ease;
+}
+
+.progress-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 12px;
+  margin: 10px 0;
+  border-radius: 13px;
+  background: #172f4b;
+  border: 1px solid transparent;
+  transition: .2s;
+  cursor: pointer;
+}
+
+.task:has(input:checked) {
+  border-color: #35e0e570;
+  background: #123b47;
+}
+
+.task input {
+  width: 21px;
+  height: 21px;
+  accent-color: var(--teal);
+  flex-shrink: 0;
+}
+
+.task-text {
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.task small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+  margin-top: 3px;
+}
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  color: var(--cyan);
+  margin: 16px 0 8px;
+  font-weight: 700;
+}
+
+select, textarea {
+  width: 100%;
+  border: 1px solid #ffffff18;
+  border-radius: 12px;
+  background: #091a30;
+  color: var(--text);
+  padding: 13px;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+select:focus, textarea:focus {
+  border-color: var(--cyan);
+}
+
+textarea {
+  min-height: 130px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+button {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  color: #071426;
+  background: linear-gradient(100deg, var(--cyan), var(--teal));
+  box-shadow: 0 5px 20px #00bfa630;
+  transition: transform .2s;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+.secondary-btn {
+  background: linear-gradient(100deg, #9b75ff, #6c91ff);
+  box-shadow: 0 5px 20px #9b75ff30;
+}
+
+.history-item {
+  background: #172f4b;
+  padding: 13px;
+  margin-top: 9px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.history-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.done {
+  color: var(--green);
+  font-weight: 800;
+}
+
+.missed {
+  color: var(--red);
+  font-weight: 800;
+}
+
+.history-notes {
+  color: var(--muted);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 15px 5px;
+  font-size: 13px;
+}
+
+.motivation {
+  margin-top: 23px;
+  padding: 23px 19px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #163e55, #30234f, #10243d);
+  border: 1px solid #9b75ff55;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.motivation h2 {
+  color: var(--cyan);
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.motivation p {
+  font-size: 14px;
+  color: #e1eaff;
+  margin: 8px 0;
+}
+
+.motivation .signature {
+  color: #b99aff;
+  font-weight: 800;
+  margin-top: 15px;
+}
+
+footer {
+  text-align: center;
+  padding: 22px 5px 5px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #173e4b;
+  color: white;
+  border: 1px solid var(--cyan);
+  padding: 13px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  opacity: 0;
+  transition: .3s;
+  z-index: 10;
+  width: max-content;
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+@media (min-width: 600px) {
+  body {
+    padding-top: 30px;
+  }
+
+  .section {
+    padding: 23px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo">M</div>
+    <h1>MOHAMMED'S CONSISTENCY TRACKER & DASHBOARD</h1>
+    <div class="subtitle">DISCIPLINE • KNOWLEDGE • CONSISTENCY</div>
+    <div class="identity">
+      Mohammed | Software Engineering Student<br>
+      Wollo University
+    </div>
+
+    <div class="objective">
+      <strong>MY MAIN OBJECTIVE</strong><br>
+      To master Software Development, build a strong foundation in
+      Cybersecurity, and maintain daily consistency from idea to success.
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <section class="section">
+    <div class="section-title"><span>✦</span> My Daily Dashboard</div>
+    <div class="date" id="todayDate"></div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-number" id="streak">0 🔥</div>
+        <div class="stat-label">Current Streak</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-number" id="totalDays">0</div>
+        <div class="stat-label">Completed Days</div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;font-size:13px;font-weight:700">
+      Today's Progress
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">0% completed</div>
+  </section>
+
+  <!-- DAILY TASKS -->
+  <section class="section">
+    <div class="section-title"><span>✓</span> Today's Daily Tasks</div>
+
+    <label class="task">
+      <input type="checkbox" class="task-check" data-task="web">
+      <span class="task-text">
+        Web Development Practice
+        <small>HTML • CSS • JavaScript • Build real projects</small>
+      </span>
+    </label>
+
+    <label class="task">
+      <input type="checkbox" class="task-check" data-task="cyber">
+      <span class="task-text">
+        Cybersecurity / OWASP Study
+        <small>Security fundamentals • Ethical learning • OWASP</small>
+      </span>
+    </label>
+
+    <label class="task">
+      <input type="checkbox" class="task-check" data-task="university">
+      <span class="task-text">
+        University Classes & Study
+        <small>Attend classes • Review lessons • Complete coursework</small>
+      </span>
+    </label>
+
+    <p class="date" style="margin:13px 0 0">
+      Small daily progress is more powerful than occasional perfection.
+    </p>
+  </section>
+
+  <!-- DAILY LOG -->
+  <section class="section">
+    <div class="section-title"><span>✎</span> Daily Status & Personal Log</div>
+
+    <label class="field-label" for="status">Today's Overall Status</label>
+    <select id="status">
+      <option value="pending">Not decided yet</option>
+      <option value="done">Done — I stayed consistent</option>
+      <option value="missed">Missed — I will try again</option>
+    </select>
+
+    <label class="field-label" for="notes">
+      Daily Notes, Achievements & Lessons
+    </label>
+
+    <textarea id="notes"
+      placeholder="What did I learn today? What did I accomplish? What should I improve tomorrow?"></textarea>
+
+    <button id="saveBtn">💾 SAVE / UPDATE TODAY'S RECORD</button>
+    <button class="secondary-btn" id="clearBtn">
+      ↺ RESET TODAY'S FORM
+    </button>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="section">
+    <div class="section-title"><span>◷</span> My Consistency History</div>
+    <div id="history">
+      <div class="empty">Your saved daily records will appear here.</div>
+    </div>
+  </section>
+
+  <!-- MOTIVATION -->
+  <section class="motivation">
+    <h2>MOHAMMED, REMEMBER YOUR MISSION.</h2>
+
+    <p>
+      You are not studying just to pass university courses.
+      You are building the knowledge and discipline that will
+      shape your future.
+    </p>
+
+    <p>
+      Remember the laptop you dream of owning. Remember the
+      projects you want to build, the problems you want to solve,
+      and the future you are working toward.
+    </p>
+
+    <p>
+      One day, your hard work can help you become a skilled
+      <strong>Software Engineer and Security Engineer</strong>.
+      But that future is built through the choices you make today.
+    </p>
+
+    <p>
+      Keep reading. Keep practicing. Understand the fundamentals.
+      Build projects. Learn from mistakes. Be patient with your progress.
+    </p>
+
+    <p>
+      Do not wait until you feel motivated. Develop discipline.
+      A difficult day does not erase your progress. Start again
+      and keep moving forward.
+    </p>
+
+    <p style="color:#35e0e5;font-weight:800;font-size:16px">
+      YOUR FUTURE IS BUILT BY WHAT YOU DO CONSISTENTLY TODAY.
+    </p>
+
+    <div class="signature">— Mohammed | Future Software & Security Engineer</div>
+  </section>
+
+  <footer>
+    MOHAMMED'S PERSONAL CONSISTENCY SYSTEM<br>
+    Built with HTML • CSS • JavaScript<br>
+    Your progress is stored locally on this device.
+  </footer>
+
+</div>
+
+<div class="toast" id="toast">Saved successfully!</div>
+
+<script>
+const STORAGE_KEY = "mohammedConsistencyTracker_v1";
+
+const taskChecks = document.querySelectorAll(".task-check");
+const statusInput = document.getElementById("status");
+const notesInput = document.getElementById("notes");
+
+const today = getLocalDate();
+
+function getLocalDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getData() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  } catch (error) {
+    console.error("Could not read saved data:", error);
+    return {};
+  }
+}
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function getTasks() {
+  const tasks = {};
+
+  taskChecks.forEach(check => {
+    tasks[check.dataset.task] = check.checked;
+  });
+
+  return tasks;
+}
+
+function setTasks(tasks = {}) {
+  taskChecks.forEach(check => {
+    check.checked = Boolean(tasks[check.dataset.task]);
+  });
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const completed = [...taskChecks].filter(check => check.checked).length;
+  const percentage = Math.round((completed / taskChecks.length) * 100);
+
+  document.getElementById("progressFill").style.width =
+    percentage + "%";
+
+  document.getElementById("progressLabel").textContent =
+    `${percentage}% completed (${completed}/${taskChecks.length} tasks)`;
+}
+
+function getStreak(data) {
+  let streak = 0;
+  const date = new Date();
+
+  // A streak remains current if today or yesterday was completed.
+  const todayRecord = data[today];
+  const yesterday = new Date(date);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const yesterdayKey = formatDate(yesterday);
+
+  if (
+    todayRecord?.status !== "done" &&
+    data[yesterdayKey]?.status !== "done"
+  ) {
+    return 0;
+  }
+
+  // Count backwards from today if done, otherwise from yesterday.
+  if (todayRecord?.status !== "done") {
+    date.setDate(date.getDate() - 1);
+  }
+
+  while (true) {
+    const key = formatDate(date);
+
+    if (data[key]?.status === "done") {
+      streak++;
+      date.setDate(date.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function updateDashboard() {
+  const data = getData();
+
+  const completedDays = Object.values(data).filter(
+    record => record.status === "done"
+  ).length;
+
+  document.getElementById("streak").textContent =
+    getStreak(data) + " 🔥";
+
+  document.getElementById("totalDays").textContent =
+    completedDays;
+
+  updateProgress();
+}
+
+function loadToday() {
+  const data = getData();
+  const record = data[today];
+
+  if (record) {
+    setTasks(record.tasks || {});
+    statusInput.value = record.status || "pending";
+    notesInput.value = record.notes || "";
+  } else {
+    setTasks({});
+    statusInput.value = "pending";
+    notesInput.value = "";
+  }
+
+  updateDashboard();
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
+}
+
+function renderHistory() {
+  const data = getData();
+
+  const entries = Object.entries(data)
+    .sort((a, b) => b[0].localeCompare(a[0]));
+
+  const history = document.getElementById("history");
+
+  if (entries.length === 0) {
+    history.innerHTML =
+      '<div class="empty">No records yet. Start with today's goals!</div>';
+    return;
+  }
+
+  history.innerHTML = "";
+
+  entries.slice(0, 10).forEach(([date, record]) => {
+    const item = document.createElement("div");
+    item.className = "history-item";
+
+    const top = document.createElement("div");
+    top.className = "history-top";
+
+    const dateText = document.createElement("strong");
+    dateText.textContent = date;
+
+    const statusText = document.createElement("span");
+    statusText.className =
+      record.status === "done" ? "done" :
+      record.status === "missed" ? "missed" : "";
+
+    statusText.textContent =
+      record.status === "done" ? "DONE ✓" :
+      record.status === "missed" ? "MISSED" : "PENDING";
+
+    top.append(dateText, statusText);
+
+    const taskText = document.createElement("div");
+    const tasks = Object.values(record.tasks || {});
+    const count = tasks.filter(Boolean).length;
+
+    taskText.style.color = "#9aafc7";
+    taskText.style.marginBottom = "7px";
+    taskText.textContent = `Tasks completed: ${count}/3`;
+
+    const notes = document.createElement("div");
+    notes.className = "history-notes";
+    notes.textContent = record.notes || "No notes added.";
+
+    item.append(top, taskText, notes);
+    history.appendChild(item);
+  });
+}
+
+taskChecks.forEach(check => {
+  check.addEventListener("change", updateProgress);
+});
+
+document.getElementById("saveBtn").addEventListener("click", () => {
+  const data = getData();
+
+  data[today] = {
+    tasks: getTasks(),
+    status: statusInput.value,
+    notes: notesInput.value,
+    updatedAt: new Date().toISOString()
+  };
+
+  try {
+    saveData(data);
+    updateDashboard();
+    renderHistory();
+    showToast("Your daily record has been saved! ✓");
+  } catch (error) {
+    showToast("Could not save. Check your browser storage.");
+    console.error(error);
+  }
+});
+
+document.getElementById("clearBtn").addEventListener("click", () => {
+  if (!confirm("Reset today's form? Your previously saved record will remain unchanged until you save again.")) {
+    return;
+  }
+
+  setTasks({});
+  statusInput.value = "pending";
+  notesInput.value = "";
+
+  showToast("Today's form has been reset.");
+});
+
+document.getElementById("todayDate").textContent =
+  new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+
+loadToday();
+renderHistory();
+</script>
+</body>
+</html>
